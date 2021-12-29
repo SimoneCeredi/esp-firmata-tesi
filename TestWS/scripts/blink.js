@@ -12,34 +12,33 @@
  * #define SUBNET_MASK        255,255,255,0 // REQUIRED for ESP8266_WIFI, ignored for others
  * #define GATEWAY_IP_ADDRESS 0,0,0,0       // REQUIRED for ESP8266_WIFI, ignored for others
  */
-let Firmata = require("firmata").Board;
-let EtherPortClient = require("etherport-client").EtherPortClient;
-let board = new Firmata(new EtherPortClient({
-    host: "192.168.1.12",
-    port: 3030
-}));
+let Firmata = require('firmata').Board;
+let EtherPortClient = require('etherport-client').EtherPortClient;
+let board = new Firmata(
+    new EtherPortClient({
+        host: '192.168.1.12',
+        port: 3030,
+    })
+);
 let start = Date.now();
 
-board.on("ready", function () {
+board.on('ready', function () {
     let connectionTime = Date.now() - start;
-    console.log("READY!, connection took: " + connectionTime + 'ms');
-    console.log(
-        board.firmware.name + "-" +
-        board.firmware.version.major + "." +
-        board.firmware.version.minor
-    );
+    console.log('READY!, connection took: ' + connectionTime + 'ms');
+    console.log(board.firmware.name + '-' + board.firmware.version.major + '.' + board.firmware.version.minor);
 
     let state = 1;
     let lastVal = 0;
 
     this.pinMode(16, this.MODES.OUTPUT);
 
-    setInterval(function () {
-        // blinks the blue LED on a HUZZAH ESP8266 board
-        // for other boards, wire an LED to pin 2 or change
-        // the pin number below
-        this.digitalWrite(16, (state ^= 1));
-    }.bind(this), 500);
-
-
+    setInterval(
+        function () {
+            // blinks the blue LED on a HUZZAH ESP8266 board
+            // for other boards, wire an LED to pin 2 or change
+            // the pin number below
+            this.digitalWrite(16, (state ^= 1));
+        }.bind(this),
+        500
+    );
 });
