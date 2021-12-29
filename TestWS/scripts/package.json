@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "etherport-client": "^0.1.4",
+    "firmata": "^2.3.0",
+    "johnny-five": "^2.1.0"
+  }
+}
