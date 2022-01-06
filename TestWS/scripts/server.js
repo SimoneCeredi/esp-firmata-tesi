@@ -12,7 +12,7 @@ process.on('uncaughtException', (err) => {
 
 app.get('/', (req, res) => {
     console.log('Got a request');
-    res.send('Hello World!');
+    res.status(200).send('Hello World!');
 });
 
 app.get('/connect', (req, res) => {
@@ -27,7 +27,7 @@ app.get('/connect', (req, res) => {
     board.on('ready', () => {
         boards.set(ip, board);
         console.log('Connected to ' + ip);
-        res.sendStatus(200);
+        res.status(200).send('Connected');
     });
 });
 
@@ -37,14 +37,11 @@ app.get('/setpinvalue', (req, res) => {
     const value = req.query['value'] == 'true' || req.query['value'] == '1' ? 1 : 0;
     let board = boards.get(ip);
     if (!board) {
-        res.send('Board not connected');
-        res.sendStatus(400);
+        res.status(400).send('Board not connected');
     } else if (pin < 0 || pin > 16) {
-        res.send('Unavailable pin');
-        res.sendStatus(400);
+        res.status(400).send('Unavailable pin');
     } else if (value !== 0 && value !== 1) {
-        res.send('Wrong value');
-        res.sendStatus(400);
+        res.status(400).send('Wrong value');
     } else {
         led = new Led({ pin, board });
         board.repl.inject({ led });
@@ -54,7 +51,7 @@ app.get('/setpinvalue', (req, res) => {
             led.off();
         }
         console.log('Setting pin ' + pin + ' of ' + ip + ' to ' + value);
-        res.sendStatus(200);
+        res.status(200).send('Applied');
     }
 });
 
@@ -63,11 +60,9 @@ app.get('/analogread', (req, res) => {
     const pin = req.query['pin'];
     const board = boards.get(ip);
     if (!board) {
-        res.send('Board not connected');
-        res.sendStatus(400);
+        res.status(400).send('Board not connected');
     } else if (pin != 'A0') {
-        res.send('Unavailable pin');
-        res.sendStatus(400);
+        res.status(400).send('Unavailable pin');
     } else {
         const potentiometer = new Sensor({ pin, board, freq: 250, type: 'analog' });
         potentiometer.on('data', () => {
@@ -78,7 +73,7 @@ app.get('/analogread', (req, res) => {
             console.log('-----------------');
             if (value != null) {
                 potentiometer.disable();
-                res.send(value.toString());
+                res.status(200).send(value.toString());
             }
         });
 
