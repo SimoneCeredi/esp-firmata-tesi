@@ -56,13 +56,6 @@ app.get('/setpinvalue', (req, res) => {
         }
         console.log('Setting pin ' + pin + ' of ' + ip + ' to ' + value);
         res.sendStatus(200);
-
-        // board.on('ready', () => {
-        //     board.pinMode(pin, board.MODES.OUTPUT);
-        //     board.digitalWrite(pin, value, true);
-        //     board.flushDigitalPorts();
-        //     res.sendStatus(200);
-        // });
     }
 });
 
