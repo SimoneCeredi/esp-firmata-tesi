@@ -6,6 +6,10 @@ const expPort = 3000;
 const espPort = 3030;
 let boards = new Map();
 
+process.on('uncaughtException', (err) => {
+    console.log(err);
+});
+
 app.get('/', (req, res) => {
     console.log('Got a request');
     res.send('Hello World!');
@@ -30,7 +34,8 @@ app.get('/connect', (req, res) => {
 app.get('/setpinvalue', (req, res) => {
     ip = req.query['ip'];
     pin = req.query['pin'];
-    value = parseInt(req.query['value']);
+    value = req.query['value'] == 'true' || req.query['value'] == '1' ? 1 : 0;
+    console.log(value);
     let board = boards.get(ip);
     if (!board) {
         res.send('Board not connected');
