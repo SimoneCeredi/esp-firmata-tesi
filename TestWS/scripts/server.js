@@ -1,4 +1,4 @@
-const { Board, Led } = require('johnny-five');
+const { Board, Led, Sensor } = require('johnny-five');
 const EtherPortClient = require('etherport-client').EtherPortClient;
 const express = require('express');
 const app = express();
@@ -16,8 +16,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/connect', (req, res) => {
-    ip = req.query['ip'];
-    board = new Board({
+    const ip = req.query['ip'];
+    const board = new Board({
         port: new EtherPortClient({
             host: ip,
             port: espPort,
@@ -32,10 +32,9 @@ app.get('/connect', (req, res) => {
 });
 
 app.get('/setpinvalue', (req, res) => {
-    ip = req.query['ip'];
-    pin = req.query['pin'];
-    value = req.query['value'] == 'true' || req.query['value'] == '1' ? 1 : 0;
-    console.log(value);
+    const ip = req.query['ip'];
+    const pin = req.query['pin'];
+    const value = req.query['value'] == 'true' || req.query['value'] == '1' ? 1 : 0;
     let board = boards.get(ip);
     if (!board) {
         res.send('Board not connected');
@@ -47,7 +46,7 @@ app.get('/setpinvalue', (req, res) => {
         res.send('Wrong value');
         res.sendStatus(400);
     } else {
-        led = new Led({ pin: pin, board: board });
+        led = new Led({ pin, board });
         board.repl.inject({ led });
         if (value == 0) {
             led.on();
@@ -59,6 +58,35 @@ app.get('/setpinvalue', (req, res) => {
     }
 });
 
+app.get('/analogread', (req, res) => {
+    const ip = req.query['ip'];
+    const pin = req.query['pin'];
+    const board = boards.get(ip);
+    if (!board) {
+        res.send('Board not connected');
+        res.sendStatus(400);
+    } else if (pin != 'A0') {
+        res.send('Unavailable pin');
+        res.sendStatus(400);
+    } else {
+        const potentiometer = new Sensor({ pin, board, freq: 250, type: 'analog' });
+        potentiometer.on('data', () => {
+            const { value, raw } = potentiometer;
+            console.log('Sensor: ');
+            console.log('  value  : ', value);
+            console.log('  raw    : ', raw);
+            console.log('-----------------');
+            if (value != null) {
+                potentiometer.disable();
+                res.send(value.toString());
+            }
+        });
+
+        // res.send(potentiometer.value);
+        // res.sendStatus(200);
+    }
+});
+
 app.listen(expPort, () => {
-    console.log(`Example app listening at http://localhost:${expPort}`);
+    console.log(`Server listening at http://localhost:${expPort}`);
 });
