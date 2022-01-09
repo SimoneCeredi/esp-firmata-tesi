@@ -1,10 +1,13 @@
 const { Board, Led, Sensor } = require('johnny-five');
 const EtherPortClient = require('etherport-client').EtherPortClient;
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const expPort = 3000;
 const espPort = 3030;
 let boards = new Map();
+
+app.use(cors());
 
 process.on('uncaughtException', (err) => {
     console.log(err);

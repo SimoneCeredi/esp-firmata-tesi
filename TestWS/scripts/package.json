@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "cors": "^2.8.5",
     "etherport-client": "^0.1.4",
     "express": "^4.17.2",
     "firmata": "^2.3.0",
