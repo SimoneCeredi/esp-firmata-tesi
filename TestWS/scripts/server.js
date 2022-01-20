@@ -49,9 +49,9 @@ app.get('/setpinvalue', (req, res) => {
         led = new Led({ pin, board });
         board.repl.inject({ led });
         if (value == 0) {
-            led.on();
-        } else {
             led.off();
+        } else {
+            led.on();
         }
         console.log('Setting pin ' + pin + ' of ' + ip + ' to ' + value);
         res.status(200).send('Applied');
