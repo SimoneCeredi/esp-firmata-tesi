@@ -17,7 +17,12 @@ const addBoard = (ip, board) => {
     boards.set(ip, board);
 };
 
+const getBoard = (ip) => {
+    return boards.get(ip);
+};
+
 module.exports = {
     connect,
     addBoard,
+    getBoard,
 };
