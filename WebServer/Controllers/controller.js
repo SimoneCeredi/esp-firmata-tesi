@@ -1,8 +1,13 @@
 const model = require('../Models/model');
 
-const connect = async (req, res) => {
+const connect = (req, res) => {
     const ip = req.query['ip'];
-    await model.connect(ip, res);
+    const board = model.connect(ip, res);
+    board.on('ready', () => {
+        model.addBoard(ip, board);
+        console.log('Connected to ' + ip);
+        res.status(200).send('Connected to ' + ip);
+    });
 };
 
 module.exports = {
