@@ -14,6 +14,26 @@ const digitalWrite = (req, res) => {
     res.status(code).send(message);
 };
 
+const analogWrite = (req, res) => {
+    const ip = req.query['ip'];
+    const pin = req.query['pin'];
+    let value = parseInt(req.query['value']);
+    const { code, message } = model.analogWrite(ip, pin, value);
+    res.status(code).send(message);
+};
+
+const digitalRead = (req, res) => {
+    const ip = req.query['ip'];
+    const pin = req.query['pin'];
+
+    model
+        .digitalRead(ip, pin)
+        .then(({ code, message }) => res.status(code).send(message))
+        .catch((err) => res.status(code).send(err));
+};
+
 module.exports = {
     digitalWrite,
+    analogWrite,
+    digitalRead,
 };

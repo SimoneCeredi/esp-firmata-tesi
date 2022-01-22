@@ -1,4 +1,4 @@
-const { Pin } = require('johnny-five');
+const { Pin, Board, Led, Sensor } = require('johnny-five');
 const boardsSpecs = require('../Config/config');
 const model = require('./model');
 
@@ -6,16 +6,53 @@ const digitalWrite = (ip, pin, value) => {
     const board = model.getBoard(ip);
     if (!board) {
         return { code: 400, message: 'Board not found' };
-    } else if (pin < boardsSpecs.esp8266.minDigitalPin || pin > boardsSpecs.esp8266.maxDigitalPin) {
+    } else if (!boardsSpecs.esp8266.isDigital(pin)) {
         return { code: 400, message: 'Wrong pin' };
     }
-    const pinSensor = new Pin({ pin, board, type: 'digital' });
-    board.repl.inject({ pinSensor });
-    pinSensor.write(value);
+    board.digitalWrite(pin, value);
     console.log('Setting pin ' + pin + ' of ' + ip + ' to ' + value);
     return { code: 200, message: `On ${ip} setted pin ${pin} to ${value}` };
 };
 
+const analogWrite = (ip, pin, value) => {
+    const board = model.getBoard(ip);
+    if (!board) {
+        return { code: 400, message: 'Board not found' };
+    } else if (!boardsSpecs.esp8266.isDigital(pin)) {
+        return { code: 400, message: 'Wrong pin' };
+    } else if (value < boardsSpecs.esp8266.minAnalogValue || value > boardsSpecs.esp8266.maxAnalogValue) {
+        return { code: 400, message: 'Wrong value' };
+    }
+    const led = new Led({ pin, board });
+    board.repl.inject({ led });
+    led.brightness(value);
+    console.log('Setting pin ' + pin + ' of ' + ip + ' to ' + value);
+    return { code: 200, message: `On ${ip} setted pin ${pin} to ${value}` };
+};
+
+const digitalRead = (ip, pin) => {
+    const board = model.getBoard(ip);
+    if (!board) {
+        return { code: 400, message: 'Board not found' };
+    } else if (!boardsSpecs.esp8266.isDigital(pin)) {
+        return { code: 400, message: 'Wrong pin' };
+    }
+    const pinSensor = new Sensor({ pin, board, type: 'digital' });
+
+    return new Promise((resolve, reject) => {
+        pinSensor.on('data', () => {
+            const { value, raw } = pinSensor;
+            if (raw != null) {
+                pinSensor.disable();
+                console.log('Value ' + raw);
+                resolve({ code: 200, message: raw.toString() });
+            }
+        });
+    });
+};
+
 module.exports = {
     digitalWrite,
+    analogWrite,
+    digitalRead,
 };
