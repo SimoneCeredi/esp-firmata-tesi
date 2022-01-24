@@ -1,5 +1,5 @@
 const { Led, Sensor } = require('johnny-five');
-const boardsSpecs = require('../Config/config');
+const { boardsSpecs } = require('../Config/config');
 const model = require('./model');
 
 const digitalWrite = (ip, pin, value) => {

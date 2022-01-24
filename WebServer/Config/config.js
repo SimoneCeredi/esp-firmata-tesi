@@ -1,3 +1,5 @@
+const connectionTimeout = 10000;
+
 const boardsSpecs = {
     esp8266: {
         name: 'esp8266',
@@ -8,4 +10,4 @@ const boardsSpecs = {
     },
 };
 
-module.exports = boardsSpecs;
+module.exports = { boardsSpecs, connectionTimeout };
