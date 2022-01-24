@@ -4,17 +4,21 @@ const { Board } = require('johnny-five');
 let boards = new Map();
 
 const connect = (ip) => {
-    return new Board({
+    const board = new Board({
         port: new EtherPortClient({
             host: ip,
             port: process.env.MICROCONTROLLER_PORT,
         }),
         repl: true,
     });
-};
 
-const addBoard = (ip, board) => {
-    boards.set(ip, board);
+    return new Promise((resolve, reject) => {
+        board.on('ready', () => {
+            boards.set(ip, board);
+            console.log('Connected to ' + ip);
+            resolve({ code: 200, message: 'Connected to ' + ip });
+        });
+    });
 };
 
 const getBoard = (ip) => {
@@ -23,6 +27,6 @@ const getBoard = (ip) => {
 
 module.exports = {
     connect,
-    addBoard,
+
     getBoard,
 };

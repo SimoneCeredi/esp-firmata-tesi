@@ -2,12 +2,10 @@ const model = require('../Models/model');
 
 const connect = (req, res) => {
     const ip = req.query['ip'];
-    const board = model.connect(ip, res);
-    board.on('ready', () => {
-        model.addBoard(ip, board);
-        console.log('Connected to ' + ip);
-        res.status(200).send('Connected to ' + ip);
-    });
+    model
+        .connect(ip, res)
+        .then(({ code, message }) => res.status(code).send(message))
+        .catch((err) => res.status(400).send(err));
 };
 
 module.exports = {

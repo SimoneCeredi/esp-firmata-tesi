@@ -29,7 +29,7 @@ const digitalRead = (req, res) => {
     model
         .digitalRead(ip, pin)
         .then(({ code, message }) => res.status(code).send(message))
-        .catch((err) => res.status(code).send(err));
+        .catch((err) => res.status(400).send(err));
 };
 
 module.exports = {
