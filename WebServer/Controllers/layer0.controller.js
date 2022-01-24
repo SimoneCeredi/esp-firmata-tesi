@@ -32,8 +32,19 @@ const digitalRead = (req, res) => {
         .catch((err) => res.status(400).send(err));
 };
 
+const analogRead = (req, res) => {
+    const ip = req.query['ip'];
+    const pin = req.query['pin'];
+    // console.log(model.analogRead(ip, pin));
+    model
+        .analogRead(ip, pin)
+        .then(({ code, message }) => res.status(code).send(message))
+        .catch((err) => res.status(400).send(err));
+};
+
 module.exports = {
     digitalWrite,
     analogWrite,
     digitalRead,
+    analogRead,
 };

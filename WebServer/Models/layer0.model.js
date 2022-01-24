@@ -1,4 +1,4 @@
-const { Pin, Board, Led, Sensor } = require('johnny-five');
+const { Led, Sensor } = require('johnny-five');
 const boardsSpecs = require('../Config/config');
 const model = require('./model');
 
@@ -33,11 +33,25 @@ const analogWrite = (ip, pin, value) => {
 const digitalRead = (ip, pin) => {
     const board = model.getBoard(ip);
     if (!board) {
-        return { code: 400, message: 'Board not found' };
+        return Promise.resolve({ code: 400, message: 'Board not found' });
     } else if (!boardsSpecs.esp8266.isDigital(pin)) {
-        return { code: 400, message: 'Wrong pin' };
+        return Promise.resolve({ code: 400, message: 'Wrong pin' });
     }
-    const pinSensor = new Sensor({ pin, board, type: 'digital' });
+    return sensorRead(board, pin, 'digital');
+};
+
+const analogRead = (ip, pin) => {
+    const board = model.getBoard(ip);
+    if (!board) {
+        return Promise.resolve({ code: 400, message: 'Board not found' });
+    } else if (!boardsSpecs.esp8266.isAnalog(pin)) {
+        return Promise.resolve({ code: 400, message: 'Wrong pin' });
+    }
+    return sensorRead(board, pin, 'analog');
+};
+
+const sensorRead = (board, pin, type) => {
+    const pinSensor = new Sensor({ pin, board, type });
 
     return new Promise((resolve, reject) => {
         pinSensor.on('data', () => {
@@ -55,4 +69,5 @@ module.exports = {
     digitalWrite,
     analogWrite,
     digitalRead,
+    analogRead,
 };

@@ -5,5 +5,6 @@ const controller = require('../Controllers/layer0.controller');
 router.get('/digitalwrite', controller.digitalWrite);
 router.get('/analogwrite', controller.analogWrite);
 router.get('/digitalread', controller.digitalRead);
+router.get('/analogread', controller.analogRead);
 
 module.exports = router;

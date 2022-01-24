@@ -27,6 +27,5 @@ const getBoard = (ip) => {
 
 module.exports = {
     connect,
-
     getBoard,
 };
