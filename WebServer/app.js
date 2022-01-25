@@ -13,7 +13,7 @@ app.use(cors());
 
 app.use(routes);
 app.use('/layer0', layer0Routes);
-// app.use('/layer1', layer1Routes);
+app.use('/layer1', layer1Routes);
 // app.use('/layer2', layer2Routes);
 
 process.on('uncaughtException', (err) => {
