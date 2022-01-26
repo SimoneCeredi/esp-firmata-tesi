@@ -9,7 +9,9 @@ const digitalWrite = (ip, pin, value) => {
     } else if (!boardsSpecs.esp8266.isDigital(pin)) {
         return { code: 400, message: 'Wrong pin' };
     }
-    board.digitalWrite(pin, value);
+    const led = new Led({ pin, board });
+    board.repl.inject({ led });
+    value ? led.on() : led.off();
     console.log('Setting pin ' + pin + ' of ' + ip + ' to ' + value);
     return { code: 200, message: `On ${ip} setted pin ${pin} to ${value}` };
 };
