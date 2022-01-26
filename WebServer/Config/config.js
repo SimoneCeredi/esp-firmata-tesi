@@ -10,4 +10,7 @@ const boardsSpecs = {
     },
 };
 
-module.exports = { boardsSpecs, connectionTimeout };
+module.exports = {
+    boardsSpecs,
+    connectionTimeout,
+};
