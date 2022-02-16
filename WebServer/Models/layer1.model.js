@@ -1,6 +1,7 @@
 const { Button } = require('johnny-five');
 const { boardsSpecs } = require('../Config/config');
 const model = require('./model');
+const eventModel = require('./event.model');
 
 const buttonEvent = (ip, pin, event) => {
     const board = model.getBoard(ip);
@@ -13,13 +14,15 @@ const buttonEvent = (ip, pin, event) => {
     }
     const transformedEvent = event === 'pressed' ? 'press' : 'release';
     const button = new Button({ pin, board });
-    return new Promise((resolve, reject) => {
-        button.on(transformedEvent, () => {
-            button.removeAllListeners(transformedEvent);
-            console.log('Button ' + event);
-            resolve({ code: 200, message: 'Button ' + event });
-        });
+
+    const eventCode = eventModel.createEvent();
+
+    button.on(transformedEvent, () => {
+        button.removeAllListeners(transformedEvent);
+        console.log('Button ' + event);
+        eventModel.completeEvent(eventCode);
     });
+    return Promise.resolve({ code: 200, message: eventCode });
 };
 
 module.exports = {

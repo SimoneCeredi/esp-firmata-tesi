@@ -6,7 +6,7 @@ const app = express();
 const routes = require('./Routes/routes');
 const layer0Routes = require('./Routes/layer0.routes');
 const layer1Routes = require('./Routes/layer1.routes');
-const layer2Routes = require('./Routes/layer2.routes');
+const eventRoutes = require('./Routes/event.routes');
 
 dotenv.config();
 app.use(cors());
@@ -14,7 +14,7 @@ app.use(cors());
 app.use(routes);
 app.use('/layer0', layer0Routes);
 app.use('/layer1', layer1Routes);
-// app.use('/layer2', layer2Routes);
+app.use('/', eventRoutes);
 
 process.on('uncaughtException', (err) => {
     console.log(err);
